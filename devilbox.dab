@@ -1,0 +1,198 @@
+{
+  "Services": {
+    "bind": {
+      "Env": [
+        "DEBUG_ENTRYPOINT=1",
+        "WILDCARD_DNS=loc=127.0.0.1",
+        "DNS_FORWARDER=8.8.8.8,8.8.4.4",
+        "DNSSEC_VALIDATE=no",
+        "DOCKER_LOGS=0"
+      ],
+      "Image": "cytopia/bind@sha256:9a05065703a7a908af7d183bb20540a76ac589222135b678fafccc279965b6ba",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 53,
+          "Protocol": "tcp"
+        },
+        {
+          "Port": 53,
+          "Protocol": "udp"
+        }
+      ]
+    },
+    "httpd": {
+      "Env": [
+        "DEBUG_ENTRYPOINT=1",
+        "DEBUG_RUNTIME=1",
+        "DOCKER_LOGS=0",
+        "TIMEZONE=UTC",
+        "NEW_UID=1000",
+        "NEW_GID=1000",
+        "WORKER_PROCESSES=auto",
+        "WORKER_CONNECTIONS=1024",
+        "MAIN_VHOST_ENABLE=1",
+        "MAIN_VHOST_STATUS_ENABLE=1",
+        "MAIN_VHOST_STATUS_ALIAS=/devilbox-httpd-status",
+        "MAIN_VHOST_SSL_TYPE=both",
+        "MAIN_VHOST_SSL_GEN=1",
+        "MAIN_VHOST_SSL_CN=localhost,*.localhost,devilbox,*.devilbox,httpd",
+        "MASS_VHOST_ENABLE=1",
+        "MASS_VHOST_TLD=.loc",
+        "MASS_VHOST_DOCROOT=htdocs",
+        "MASS_VHOST_TPL=.devilbox",
+        "MASS_VHOST_SSL_TYPE=both",
+        "MASS_VHOST_SSL_GEN=1",
+        "COMPAT=7.2",
+        "PHP_FPM_ENABLE=1",
+        "PHP_FPM_SERVER_ADDR=php",
+        "PHP_FPM_SERVER_PORT=9000",
+        "PHP_FPM_TIMEOUT=180"
+      ],
+      "Image": "devilbox/nginx-stable@sha256:0f704fc4b85e5b14c683c406d59c414174f074ff045cd0003a164972824fbdf6",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 80,
+          "Protocol": "tcp"
+        },
+        {
+          "Port": 443,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "memcd": {
+      "Image": "memcached@sha256:8fc34b9672011d89e07d0bcd0b02fdcd22634340bb8697f916ceab0c46d19c5c",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 11211,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "mongo": {
+      "Image": "mongo@sha256:71600e081274550f00647655db8b85e3103f763507c55a0636dcab1efc126630",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 27017,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "mysql": {
+      "Env": [
+        "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+      ],
+      "Image": "devilbox/mysql@sha256:1007042197fe31100ddcd19999d68f22094cb693e64d13e87f7bc65be7fe5ce1",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 3306,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "pgsql": {
+      "Env": [
+        "POSTGRES_USER=postgres",
+        "PGDATA=/var/lib/postgresql/data/pgdata"
+      ],
+      "Image": "postgres@sha256:f310592cf3964f038dbaefac2dc2088982e5ab06312a590bcacc97749ee5db69",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 5432,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    "php": {
+      "Env": [
+        "DEBUG_COMPOSE_ENTRYPOINT=1",
+        "DOCKER_LOGS=0",
+        "DEVILBOX_PATH=.",
+        "TLD_SUFFIX=loc",
+        "NEW_UID=1000",
+        "NEW_GID=1000",
+        "TIMEZONE=UTC",
+        "DNS_CHECK_TIMEOUT=1",
+        "DEVILBOX_UI_SSL_CN=localhost,*.localhost,devilbox,*.devilbox,httpd",
+        "DEVILBOX_UI_PROTECT=0",
+        "DEVILBOX_UI_PASSWORD=password",
+        "DEVILBOX_UI_ENABLE=1",
+        "DEVILBOX_VENDOR_PHPMYADMIN_AUTOLOGIN=1",
+        "DEVILBOX_VENDOR_PHPPGADMIN_AUTOLOGIN=1",
+        "PHP_SERVER=7.2",
+        "HTTPD_SERVER=nginx-stable",
+        "MYSQL_SERVER=mariadb-10.3",
+        "PGSQL_SERVER=11.1",
+        "REDIS_SERVER=5.0",
+        "MEMCD_SERVER=1.5",
+        "MONGO_SERVER=4.0",
+        "HOST_PATH_HTTPD_DATADIR=./data/www",
+        "PHP_MODULES_DISABLE=oci8,PDO_OCI,pdo_sqlsrv,sqlsrv,rdkafka,swoole",
+        "HOST_PORT_HTTPD=80",
+        "HOST_PORT_HTTPD_SSL=443",
+        "HTTPD_DOCROOT_DIR=htdocs",
+        "HTTPD_TEMPLATE_DIR=.devilbox",
+        "HTTPD_TIMEOUT_TO_PHP_FPM=180",
+        "HTTPD_NGINX_WORKER_PROCESSES=auto",
+        "HTTPD_NGINX_WORKER_CONNECTIONS=1024",
+        "HOST_PORT_MYSQL=3306",
+        "PGSQL_ROOT_USER=postgres",
+        "HOST_PORT_PGSQL=5432",
+        "HOST_PORT_REDIS=6379",
+        "HOST_PORT_MEMCD=11211",
+        "HOST_PORT_MONGO=27017",
+        "HOST_PORT_BIND=1053",
+        "BIND_DNS_RESOLVER=8.8.8.8,8.8.4.4",
+        "BIND_DNSSEC_VALIDATE=no",
+        "BIND_LOG_DNS_QUERIES=0",
+        "DEBUG_ENTRYPOINT=1",
+        "DISABLE_MODULES=oci8,PDO_OCI,pdo_sqlsrv,sqlsrv,rdkafka,swoole",
+        "ENABLE_MAIL=1",
+        "FORWARD_PORTS_TO_LOCALHOST=80:httpd:80,443:httpd:443,3306:mysql:3306,5432:pgsql:5432,6379:redis:6379,11211:memcd:11211,27017:mongo:27017",
+        "MYSQL_BACKUP_USER=root",
+        "MYSQL_BACKUP_HOST=mysql"
+      ],
+      "Image": "devilbox/php-fpm@sha256:b8f95a19c94bb9b41a98742b50d4a3191a7f07baf2fbe4bfbea2d265f3e2a45b",
+      "Networks": [
+        "app_net"
+      ]
+    },
+    "redis": {
+      "Args": [
+        "redis-server"
+      ],
+      "Env": [
+        "REDIS_ARGS= "
+      ],
+      "Image": "redis@sha256:8888f6cd2509062a377e903e17777b4a6d59c92769f6807f034fa345da9eebcf",
+      "Networks": [
+        "app_net"
+      ],
+      "Ports": [
+        {
+          "Port": 6379,
+          "Protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "Version": "0.1"
+}
